@@ -1,2 +1,2 @@
 # UdpPlayer
-An UDP media player for Android, based on google/ExoPlayer
+An UDP/TCP media player for Android, based on google/ExoPlayer
