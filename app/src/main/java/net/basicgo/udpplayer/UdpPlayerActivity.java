@@ -10,6 +10,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.extractor.mp4.Mp4Extractor;
 import com.google.android.exoplayer2.extractor.ts.DefaultTsPayloadReaderFactory;
 import com.google.android.exoplayer2.extractor.ts.TsExtractor;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -60,8 +61,10 @@ public final class UdpPlayerActivity extends Activity {
 
         //java 1.8 lamda code, pretty
         DataSource.Factory factory = () -> new TcpDataSource(300000, 5000);
-        ExtractorsFactory tsExtractorFactory = () -> new TsExtractor[]{new TsExtractor(TsExtractor.MODE_SINGLE_PMT,
+        ExtractorsFactory tsExtractorFactory = () -> new TsExtractor[]{new TsExtractor(TsExtractor.MODE_MULTI_PMT,
                 new TimestampAdjuster(0), new DefaultTsPayloadReaderFactory())};
+
+        ExtractorsFactory mp4ExtractorFactory = () -> new Mp4Extractor[]{new Mp4Extractor()};
 
         /*  alex code, ugly
         // Produces DataSource instances through which media data is loaded.
