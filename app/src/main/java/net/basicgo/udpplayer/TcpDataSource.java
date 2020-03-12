@@ -167,7 +167,7 @@ public final class TcpDataSource extends BaseDataSource {
             throw new TcpDataSource.AirMirroUdpDataSourceException(e);
         }
 
-        Log.v("AirMirroUdpDataSource", "readLength:" +readLength+"bytesToRead:"+bytesToRead);
+        //Log.v("AirMirroUdpDataSource", "readLength:" +readLength+"bytesToRead:"+bytesToRead);
         //Log.v("AirMirroUdpDataSource", "readLength:" +readLength+"bytesToRead:"+bytesToRead+"["+new String(buffer)+"]");
         return bytesToRead;
     }

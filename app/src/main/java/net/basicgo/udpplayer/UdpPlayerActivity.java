@@ -6,6 +6,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -56,6 +57,7 @@ public final class UdpPlayerActivity extends Activity {
         Uri udpUri = Uri.parse("tcp://192.168.43.1:12345");
 
         mPlayer= new SimpleExoPlayer.Builder(this).build();
+        //mPlayer= new SimpleExoPlayer.Builder(this,new DefaultRenderersFactory(this).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)).build();
         mPlayer.addAnalyticsListener(new EventLogger(null));
         localPlayerView.setPlayer(mPlayer);
 
