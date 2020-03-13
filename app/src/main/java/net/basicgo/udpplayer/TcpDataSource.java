@@ -167,7 +167,7 @@ public final class TcpDataSource extends BaseDataSource {
             throw new TcpDataSource.AirMirroUdpDataSourceException(e);
         }
 
-        //Log.v("AirMirroUdpDataSource", "readLength:" +readLength+"bytesToRead:"+bytesToRead);
+       //Log.v("AirMirroUdpDataSource", "readLength:" +readLength+"bytesToRead:"+bytesToRead);
         //Log.v("AirMirroUdpDataSource", "readLength:" +readLength+"bytesToRead:"+bytesToRead+"["+new String(buffer)+"]");
         return bytesToRead;
     }
@@ -187,8 +187,11 @@ public final class TcpDataSource extends BaseDataSource {
 
         if (socket != null) {
             try {
-                mInStream.close();
+
+                mOutStream.write("EOS".getBytes());
+                mOutStream.flush();
                 mOutStream.close();
+                mInStream.close();
                 socket.close();
             } catch (IOException e) {
                 throw new TcpDataSource.AirMirroUdpDataSourceException(e);

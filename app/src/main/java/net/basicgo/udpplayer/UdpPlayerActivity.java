@@ -6,6 +6,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 
+import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 
@@ -56,17 +57,27 @@ public final class UdpPlayerActivity extends Activity {
         //Uri udpUri = Uri.parse("udp://127.0.0.1:12345");
         Uri udpUri = Uri.parse("tcp://192.168.43.1:12345");
 
-        mPlayer= new SimpleExoPlayer.Builder(this).build();
+        /*DefaultLoadControl loadControl = new DefaultLoadControl.Builder()
+                .setBufferDurationsMs(0,DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,0,0)
+                .createDefaultLoadControl();*/
+
+        AirMirrorLoadControl loadControl = new AirMirrorLoadControl.Builder()
+                //.setBufferDurationsMs(0,DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,0,0)
+                .createDefaultLoadControl();
+
+        mPlayer= new SimpleExoPlayer.Builder(this)
+                .setLoadControl(loadControl)
+                .build();
         //mPlayer= new SimpleExoPlayer.Builder(this,new DefaultRenderersFactory(this).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)).build();
         mPlayer.addAnalyticsListener(new EventLogger(null));
         localPlayerView.setPlayer(mPlayer);
 
         //java 1.8 lamda code, pretty
-        DataSource.Factory factory = () -> new TcpDataSource(300000, 5000);
+        DataSource.Factory factory = () -> new TcpDataSource(188*1024*4, 5000);
         ExtractorsFactory tsExtractorFactory = () -> new TsExtractor[]{new TsExtractor(TsExtractor.MODE_MULTI_PMT,
                 new TimestampAdjuster(0), new DefaultTsPayloadReaderFactory())};
 
-        ExtractorsFactory mp4ExtractorFactory = () -> new Mp4Extractor[]{new Mp4Extractor()};
+        //ExtractorsFactory mp4ExtractorFactory = () -> new Mp4Extractor[]{new Mp4Extractor()};
 
         /*  alex code, ugly
         // Produces DataSource instances through which media data is loaded.
@@ -83,5 +94,29 @@ public final class UdpPlayerActivity extends Activity {
 // Prepare the player with the source.
         mPlayer.prepare(videoSource);
         mPlayer.setPlayWhenReady(true);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23) {
+            if (localPlayerView != null) {
+                localPlayerView.onPause();
+            }
+            releasePlayer();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    private void releasePlayer() {
+        if (mPlayer != null) {
+
+            mPlayer.release();
+            mPlayer = null;
+        }
     }
 }
